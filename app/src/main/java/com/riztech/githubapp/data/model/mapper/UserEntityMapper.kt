@@ -1,23 +1,19 @@
 package com.riztech.githubapp.data.model.mapper
 
-import com.riztech.githubapp.data.source.local.UserEntity
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.data.source.local.GamesEntity
+import com.riztech.githubapp.domain.model.Games.Games
 import javax.inject.Inject
 
-class UserEntityMapper @Inject constructor(): ApiMapper<User, UserEntity> {
-    override fun mapToDomain(dataModel: User): UserEntity {
-        return UserEntity(
-            id = dataModel.id,
-            avatar_url = dataModel.avatar_url,
-            login = dataModel.login,
-            organizations_url = dataModel.organizations_url,
-            received_events_url = dataModel.received_events_url,
-            repos_url = dataModel.repos_url,
-            site_admin = dataModel.site_admin,
-            starred_url = dataModel.starred_url,
-            subscriptions_url = dataModel.subscriptions_url,
-            type = dataModel.type,
-            url = dataModel.url
+class UserEntityMapper @Inject constructor(): ApiMapper<Games, GamesEntity> {
+    override fun mapToDomain(dataModel: Games): GamesEntity {
+        return GamesEntity(
+            id = dataModel.id ?: 0,
+            added = dataModel.added ?: 0,
+            rating = dataModel.rating ?: 0.0,
+            name = dataModel.name ?: "",
+            genres = dataModel.genres ?: "",
+            backgroundImage = dataModel.backgroundImage ?: "",
+            description = dataModel.description ?: ""
         )
     }
 }

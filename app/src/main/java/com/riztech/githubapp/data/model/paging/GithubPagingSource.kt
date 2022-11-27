@@ -2,37 +2,33 @@ package com.riztech.githubapp.data.model.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.riztech.githubapp.data.model.UserResponse
-import com.riztech.githubapp.data.model.UserResponseItem
-import com.riztech.githubapp.data.source.remote.GithubApi
+import com.riztech.githubapp.data.model.games.Result
+import com.riztech.githubapp.data.source.remote.GamesApi
 import retrofit2.HttpException
 import java.io.IOException
 
 private const val GITHUB_STARTING_PAGE_INDEX = 1
-private const val IN_QUALIFIER = "in:login"
 const val NETWORK_PAGE_SIZE = 30
 
 class GithubPagingSource(
-    private val githubApi: GithubApi,
+    private val gamesApi: GamesApi,
     private val query: String
-): PagingSource<Int, UserResponseItem>() {
+): PagingSource<Int, Result>() {
 
-
-    override fun getRefreshKey(state: PagingState<Int, UserResponseItem>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Result>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1) ?:
             state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
-
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UserResponseItem> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Result> {
         val position = params.key ?: GITHUB_STARTING_PAGE_INDEX
-        val apiQuery = query + IN_QUALIFIER
+        val apiQuery = query
 
         return try {
-            val response = githubApi.getSearchUser(apiQuery, position, params.loadSize)
-            val users = response.items
+            val response = gamesApi.getSearchUser(apiQuery, position, params.loadSize)
+            val users = response.results
             val nextKey = if(users.isEmpty()){
                 null
             }else{

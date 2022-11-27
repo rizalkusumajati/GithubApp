@@ -1,23 +1,17 @@
 package com.riztech.githubapp.presentation.popular
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.riztech.githubapp.data.model.UserResponseItem
 import com.riztech.githubapp.data.model.mapper.DataUserMapper
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.domain.model.Games.Games
 import com.riztech.githubapp.domain.repository.UserRepository
-import com.riztech.githubapp.domain.usecase.GetUser
 import com.riztech.githubapp.presentation.util.ViewModelAssistedFactory
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PopularViewModel(
@@ -28,11 +22,10 @@ class PopularViewModel(
     private var _state = MutableStateFlow(PopularState())
     var state: StateFlow<PopularState> = _state.asStateFlow()
 
-    val pagingDataFlow: Flow<PagingData<User>>
+    val pagingDataFlow: Flow<PagingData<Games>>
     val accept: (UiAction) -> Unit
 
     init {
-//        subscribeToUserUpdate()
         val initialQuery: String = savedStateHandle.get(LAST_SEARCH_QUERY) ?: DEFAULT_QUERY
         val lastQueryScrolled: String = savedStateHandle.get(LAST_QUERY_SCROLLED) ?: DEFAULT_QUERY
         val actionStateFlow = MutableSharedFlow<UiAction>()
@@ -85,7 +78,7 @@ class PopularViewModel(
         super.onCleared()
     }
 
-    private fun searchRepo(query: String): Flow<PagingData<User>> =
+    private fun searchRepo(query: String): Flow<PagingData<Games>> =
         userRepository.getSearchUser(query).map {
             pagingData -> pagingData.map {
                 mapper.mapToDomain(it)

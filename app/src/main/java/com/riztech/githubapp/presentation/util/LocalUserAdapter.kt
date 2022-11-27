@@ -5,19 +5,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.riztech.githubapp.databinding.UserListItemBinding
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.domain.model.Games.Games
 
-class LocalUserAdapter (val users: List<User>, val clickDetail: (user: User?) -> Unit) : RecyclerView.Adapter<LocalUserAdapter.LocalUserViewHolder>() {
+class LocalUserAdapter (val users: List<Games>, val clickDetail: (user: Games?) -> Unit) : RecyclerView.Adapter<LocalUserAdapter.LocalUserViewHolder>() {
 
     inner class LocalUserViewHolder(val binding: UserListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            fun bind(user: User){
-                binding.tvLogin.text = user.login
-                binding.ivUrl.text = user.repos_url
+            fun bind(game: Games){
+                binding.tvLogin.text = game.name
+                binding.ivRating.text = game.rating.toString()
+                binding.tvAdded.text = game.added.toString()
                 binding.root.setOnClickListener {
-                    clickDetail.invoke(user)
+                    clickDetail.invoke(game)
                 }
-                Glide.with(binding.root).load(user.avatar_url).into(binding.ivAvatar)
+                binding.tvDesc.text = game.genres
+                Glide.with(binding.root).load(game.backgroundImage).into(binding.ivAvatar)
 
             }
     }
@@ -29,7 +31,7 @@ class LocalUserAdapter (val users: List<User>, val clickDetail: (user: User?) ->
     }
 
     override fun onBindViewHolder(holder: LocalUserViewHolder, position: Int) {
-        holder.bind(user = users[position])
+        holder.bind(game = users[position])
     }
 
     override fun getItemCount(): Int {

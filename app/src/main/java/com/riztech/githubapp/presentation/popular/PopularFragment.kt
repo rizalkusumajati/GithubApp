@@ -1,6 +1,5 @@
 package com.riztech.githubapp.presentation.popular
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -10,17 +9,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
-import com.riztech.githubapp.data.model.UserResponseItem
 import com.riztech.githubapp.databinding.FragmentPopularBinding
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.domain.model.Games.Games
 import com.riztech.githubapp.presentation.home.HomeFragmentDirections
 import com.riztech.githubapp.presentation.util.*
 import dagger.android.support.DaggerFragment
@@ -63,12 +58,12 @@ class PopularFragment : DaggerFragment() {
 
     private fun FragmentPopularBinding.bindState(
         uiState: StateFlow<PopularState>,
-        pagingData: Flow<PagingData<User>>,
+        pagingData: Flow<PagingData<Games>>,
         uiActions: (UiAction) -> Unit
     ) {
         val repoAdapter = UserAdapter(){ user ->
             val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(
-                login = user?.login ?: ""
+                login = user?.id ?: 0
             )
             findNavController(this@PopularFragment).navigate(action)
         }
@@ -121,7 +116,7 @@ class PopularFragment : DaggerFragment() {
     private fun FragmentPopularBinding.bindList(
         repoAdapter: UserAdapter,
         uiState: StateFlow<PopularState>,
-        pagingData: Flow<PagingData<User>>,
+        pagingData: Flow<PagingData<Games>>,
         onScrollChanged: (UiAction.Scroll) -> Unit
     ) {
         retryButton.setOnClickListener { repoAdapter.retry() }
@@ -130,9 +125,6 @@ class PopularFragment : DaggerFragment() {
                 if (dy != 0) onScrollChanged(UiAction.Scroll(currentQuery = uiState.value.query))
             }
         })
-//        val notLoading = repoAdapter.loadStateFlow
-//            .asRemotePresentationState()
-//            .map { it == RemotePresentationState.PRESENTED }
         val notLoading = repoAdapter.loadStateFlow
             // Only emit when REFRESH LoadState for RemoteMediator changes.
             .distinctUntilChangedBy { it.source.refresh }

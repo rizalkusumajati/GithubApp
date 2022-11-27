@@ -2,9 +2,9 @@ package com.riztech.githubapp.data.di
 
 import android.app.Application
 import androidx.room.Room
+import com.riztech.githubapp.data.source.local.GamesDao
 import com.riztech.githubapp.data.source.local.GithubDatabase
 import com.riztech.githubapp.data.source.local.RemoteKeyDao
-import com.riztech.githubapp.data.source.local.UserDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -23,12 +23,13 @@ class RoomModule {
 
     @Provides
     @Singleton
-    fun getUserDao(db: GithubDatabase): UserDao {
-        return db.userDao()
-    }
-    @Provides
-    @Singleton
     fun getRemoteKeyDao(db: GithubDatabase): RemoteKeyDao {
         return db.remoteKeyDao()
+    }
+
+    @Provides
+    @Singleton
+    fun getGamesDao(db: GithubDatabase): GamesDao {
+        return db.gamesDao()
     }
 }

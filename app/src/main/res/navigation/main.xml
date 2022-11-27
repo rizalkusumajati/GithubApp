@@ -22,6 +22,6 @@
         tools:layout="@layout/fragment_detail" >
         <argument
             android:name="login"
-            app:argType="string" />
+            app:argType="integer" />
     </fragment>
 </navigation>

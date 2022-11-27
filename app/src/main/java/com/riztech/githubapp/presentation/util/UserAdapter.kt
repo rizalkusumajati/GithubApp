@@ -6,11 +6,10 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.riztech.githubapp.data.model.UserResponseItem
 import com.riztech.githubapp.databinding.UserListItemBinding
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.domain.model.Games.Games
 
-class UserAdapter(val clickDetail: (user: User?) -> Unit) : PagingDataAdapter<User, UserAdapter.UserViewHolder>(REPO_COMPARATOR) {
+class UserAdapter(val clickDetail: (user: Games?) -> Unit) : PagingDataAdapter<Games, UserAdapter.UserViewHolder>(REPO_COMPARATOR) {
     inner class UserViewHolder( val binding: UserListItemBinding): RecyclerView.ViewHolder(binding.root){
 
     }
@@ -24,12 +23,14 @@ class UserAdapter(val clickDetail: (user: User?) -> Unit) : PagingDataAdapter<Us
            val userItem = getItem(position)
            with(userItem){
                this?.let {
-                   binding.tvLogin.text = login
-                   binding.ivUrl.text = repos_url
+                   binding.tvLogin.text = name
+                   binding.ivRating.text = rating.toString()
+                   binding.tvAdded.text = added.toString()
                    binding.root.setOnClickListener {
                        clickDetail.invoke(userItem)
                    }
-                   Glide.with(binding.root).load(avatar_url).into(binding.ivAvatar)
+                   binding.tvDesc.text = genres
+                   Glide.with(binding.root).load(backgroundImage).into(binding.ivAvatar)
                }
 
            }
@@ -38,11 +39,11 @@ class UserAdapter(val clickDetail: (user: User?) -> Unit) : PagingDataAdapter<Us
 
 
     companion object {
-        private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<User>() {
-            override fun areItemsTheSame(oldItem: User, newItem: User): Boolean =
-                oldItem.login == newItem.login
+        private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<Games>() {
+            override fun areItemsTheSame(oldItem: Games, newItem: Games): Boolean =
+                oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: User, newItem: User): Boolean =
+            override fun areContentsTheSame(oldItem: Games, newItem: Games): Boolean =
                 oldItem == newItem
         }
     }

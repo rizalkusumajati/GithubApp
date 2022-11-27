@@ -5,26 +5,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riztech.githubapp.data.model.mapper.EntityUserMapper
-import com.riztech.githubapp.data.source.local.UserDao
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.data.source.local.GamesDao
+import com.riztech.githubapp.domain.model.Games.Games
 import com.riztech.githubapp.presentation.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FavoriteViewModel @Inject constructor(
-    val userDao: UserDao,
+    val gamesDao: GamesDao,
     val dispatcher: CoroutineDispatcher,
     val mapper: EntityUserMapper
 ): ViewModel() {
 
-    private val _localUser = MutableLiveData<Result<List<User>>>()
-    val localUser: LiveData<Result<List<User>>> = _localUser
+    private val _localUser = MutableLiveData<Result<List<Games>>>()
+    val localUser: LiveData<Result<List<Games>>> = _localUser
 
 
     fun getAllLocalData() {
         viewModelScope.launch(dispatcher) {
-            val result = userDao.getAll()
+            val result = gamesDao.getAll()
             if(!result.isEmpty()){
                 val data = result.map { mapper.mapToDomain(it) }
                 _localUser.postValue(Result.Success(data))
