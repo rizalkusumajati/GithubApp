@@ -1,16 +1,14 @@
 package com.riztech.githubapp.presentation.favorite
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
-import com.riztech.githubapp.R
 import com.riztech.githubapp.databinding.FragmentFavoriteBinding
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.domain.model.Games.Games
 import com.riztech.githubapp.presentation.home.HomeFragmentDirections
 import com.riztech.githubapp.presentation.util.LocalUserAdapter
 import com.riztech.githubapp.presentation.util.Result
@@ -42,13 +40,13 @@ class FavoriteFragment : DaggerFragment() {
         setupObserver()
     }
 
-    private fun updateListUser(users: List<User>){
+    private fun updateListUser(users: List<Games>){
         binding.progressBar.isVisible = false
         binding.rvUser.isVisible = true
         binding.rvUser.apply {
             adapter = LocalUserAdapter(users){ user ->
                 val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(
-                    login = user?.login ?: ""
+                    login = user?.id ?: 0
                 )
                 NavHostFragment.findNavController(this@FavoriteFragment).navigate(action)
             }
@@ -67,10 +65,12 @@ class FavoriteFragment : DaggerFragment() {
                     updateListUser(result.value)
                 }
                 is Result.Failure -> {
-
+                    binding.progressBar.isVisible = false
+                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    updateListUser(emptyList())
                 }
                 is Result.Loading -> {
-
+                    binding.progressBar.isVisible = true
                 }
             }
 

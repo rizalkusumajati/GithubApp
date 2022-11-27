@@ -1,18 +1,20 @@
 package com.riztech.githubapp.domain.repository
 
 import androidx.paging.PagingData
-import com.riztech.githubapp.data.model.UserResponse
-import com.riztech.githubapp.data.model.UserResponseItem
-import com.riztech.githubapp.domain.model.User
+import com.riztech.githubapp.data.model.games.Result
+import com.riztech.githubapp.data.source.local.GamesEntity
+import com.riztech.githubapp.domain.model.Games.Games
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-     fun getUser(query: String):  Flow<PagingData<UserResponseItem>>
+     suspend fun getUserDetail(id: Int): Result
 
-     suspend fun getUserDetail(login: String): UserResponseItem
+     fun getSearchUser(query: String):  Flow<PagingData<Result>>
 
-     fun getSearchUser(query: String):  Flow<PagingData<UserResponseItem>>
+     suspend fun saveFavoriteUser(user: Games)
 
-     suspend fun saveFavoriteUser(user: User)
+     suspend fun deleteFavorite(user: Games)
+
+     suspend fun getFavoriteGame(user: Games) : GamesEntity?
 }

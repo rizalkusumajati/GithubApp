@@ -9,7 +9,7 @@ import com.riztech.githubapp.data.model.mapper.RemoteLocalUserMapper
 import com.riztech.githubapp.data.model.mapper.UserEntityMapper
 import com.riztech.githubapp.data.repository.UserRepositoryImpl
 import com.riztech.githubapp.data.source.local.GithubDatabase
-import com.riztech.githubapp.data.source.remote.GithubApi
+import com.riztech.githubapp.data.source.remote.GamesApi
 import com.riztech.githubapp.domain.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -73,14 +73,14 @@ class NetworkModule {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
-            .baseUrl("https://api.github.com")
+            .baseUrl("https://api.rawg.io/api/")
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideApi(retrofit: Retrofit): GithubApi {
-        return retrofit.create(GithubApi::class.java)
+    fun provideApi(retrofit: Retrofit): GamesApi {
+        return retrofit.create(GamesApi::class.java)
     }
 
     @Singleton
@@ -89,5 +89,5 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideUserRepository(githubApi: GithubApi, userDatabase: GithubDatabase, mapper: RemoteLocalUserMapper, localMapper: UserEntityMapper): UserRepository = UserRepositoryImpl(githubApi, userDatabase, mapper, localMapper)
+    fun provideUserRepository(gamesApi: GamesApi, userDatabase: GithubDatabase, mapper: RemoteLocalUserMapper, localMapper: UserEntityMapper): UserRepository = UserRepositoryImpl(gamesApi, userDatabase, mapper, localMapper)
 }
